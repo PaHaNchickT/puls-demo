@@ -1,21 +1,12 @@
-"use client";
-
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Providers } from "@/components/layout/Providers";
 import "../styles/globals.css";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#daff45",
-    },
-  },
-  typography: {
-    fontFamily: "TTHoves, sans-serif",
-  },
-});
+export const metadata = {
+  title: "Pulse CRUD demo",
+  description: "Пример CRUD приложения для Pulse",
+};
 
 export default function RootLayout({
   children,
@@ -25,12 +16,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className="flex flex-col min-h-screen">
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
+        <Providers>
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );
