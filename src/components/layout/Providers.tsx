@@ -16,6 +16,7 @@ const theme = createTheme({
       contrastText: "#ffffff",
     },
   },
+
   components: {
     MuiOutlinedInput: {
       styleOverrides: {

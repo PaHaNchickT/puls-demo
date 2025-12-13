@@ -9,6 +9,7 @@ type UserState = {
   addUser: (u: User) => void;
   updateUser: (id: string, patch: Partial<User>) => void;
   deleteUser: (id: string) => void;
+  getUserById: (id: string | null) => User | null;
 };
 
 export const useUserStore = create<UserState>()(
@@ -29,6 +30,8 @@ export const useUserStore = create<UserState>()(
         })),
       deleteUser: (id) =>
         set((s) => ({ users: s.users.filter((u) => u.id !== id) })),
+      getUserById: (id: string | null) =>
+        get().users.find((u) => u.id === id) ?? null,
     }),
     { name: "users-storage" }
   )
