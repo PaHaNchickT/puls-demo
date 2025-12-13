@@ -1,9 +1,20 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect } from "react";
+import { useUserStore } from "../store/userStore";
+import { UserTable } from "../components/users/UserTable";
+
+export default function HomePage() {
+  const loadInitial = useUserStore((s) => s.loadInitial);
+
+  useEffect(() => {
+    loadInitial();
+  }, [loadInitial]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <p className="text-red-500">temp text</p>
-    </div>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Users CRUD</h1>
+      <UserTable />
+    </main>
   );
 }
