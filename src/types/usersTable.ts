@@ -1,6 +1,8 @@
+export type ModalMode = "create" | "edit" | "delete" | null;
+
 export type ModalState = {
   isOpen: boolean;
-  mode: "create" | "edit" | "delete" | null;
+  mode: ModalMode;
   editingUserId: string | null;
   innerText: string;
 };

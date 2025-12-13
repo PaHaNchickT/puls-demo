@@ -7,6 +7,8 @@ import { closeModal } from "./modalFactories";
 export const UserTableContainer = () => {
   const users = useUserStore((state) => state.users);
 
+  const addUser = useUserStore((state) => state.addUser);
+  const updateUser = useUserStore((state) => state.updateUser);
   const deleteUser = useUserStore((store) => store.deleteUser);
   const getUserById = useUserStore((store) => store.getUserById);
 
@@ -17,6 +19,8 @@ export const UserTableContainer = () => {
       users={users}
       modalState={modalState}
       setModalState={setModalState}
+      addUser={addUser}
+      updateUser={updateUser}
       deleteUser={deleteUser}
       getUserById={getUserById}
     />

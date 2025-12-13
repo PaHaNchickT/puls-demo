@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import { Modal } from "@/components/ui/Modal";
-import { UserForm } from "../UserForm";
+import { UserFormContainer } from "../UserForm/UserFormContainer";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -20,6 +20,8 @@ type UserTableViewProps = {
   users: User[];
   modalState: ModalState;
   setModalState: (state: ModalState) => void;
+  addUser: (u: User) => void;
+  updateUser: (id: string, patch: Partial<User>) => void;
   deleteUser: (id: string) => void;
   getUserById: (id: string | null) => User | null;
 };
@@ -28,6 +30,8 @@ export const UserTableView = ({
   users,
   modalState,
   setModalState,
+  addUser,
+  updateUser,
   deleteUser,
   getUserById,
 }: UserTableViewProps) => {
@@ -80,13 +84,22 @@ export const UserTableView = ({
 
       <Modal isOpen={modalState.isOpen} handleClose={handleModalClose}>
         {modalState.mode === "create" && (
-          <UserForm mode="create" onSave={handleModalClose} />
+          <UserFormContainer
+            users={users}
+            mode="create"
+            onSave={handleModalClose}
+            addUser={addUser}
+            updateUser={updateUser}
+          />
         )}
         {modalState.mode === "edit" && modalState.editingUserId && (
-          <UserForm
+          <UserFormContainer
+            users={users}
             mode="edit"
             userId={modalState.editingUserId}
             onSave={handleModalClose}
+            addUser={addUser}
+            updateUser={updateUser}
           />
         )}
         {modalState.mode === "delete" && (
