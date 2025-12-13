@@ -2,6 +2,7 @@
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { ReactNode } from "react";
 
 const theme = createTheme({
   palette: {
@@ -10,7 +11,7 @@ const theme = createTheme({
   typography: { fontFamily: "TTHoves, sans-serif" },
 });
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

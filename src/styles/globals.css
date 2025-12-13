@@ -1,3 +1,5 @@
+/* FONTS */
+
 /* Hairline */
 @font-face {
   font-family: "TTHoves";
@@ -148,11 +150,15 @@
   font-style: italic;
 }
 
+/* TAILWIND */
+
 @import "tailwindcss";
 
 @theme {
   --color-primary: #daff45;
 }
+
+/* GENERAL STYLES */
 
 * {
   transition-property: all;

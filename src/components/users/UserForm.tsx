@@ -67,6 +67,7 @@ export const UserForm: React.FC<UserFormProps> = (props) => {
         const u = users.find((user) => user.id === subId);
         if (u) updateUser(subId, { ...u, managerId: id });
       });
+      
     } else if (props.mode === "edit" && existingUser) {
       updateUser(existingUser.id, { ...existingUser, ...data });
 
