@@ -1,3 +1,5 @@
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import "../styles/globals.css";
 
 export default function RootLayout({
@@ -7,7 +9,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <head>
+        <title>Pulse CRUD demo</title>
+      </head>
+      <body className="flex flex-col justify-between">
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }

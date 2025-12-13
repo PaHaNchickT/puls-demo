@@ -12,8 +12,9 @@ export default function HomePage() {
   }, [loadInitial]);
 
   return (
-    <main className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Users CRUD</h1>
+    <main className="grow p-6">
+      <h1 className="text-2xl font-bold mb-4 text-primary">Users CRUD</h1>
+
       <UserTable />
     </main>
   );
