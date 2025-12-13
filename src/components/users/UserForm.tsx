@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -16,25 +15,25 @@ import { nanoid } from "nanoid";
 import { useUserStore } from "@/store/userStore";
 import { userSchema, UserFormData } from "@/schemas/user";
 import { UserRole } from "@/types/user";
+import { getPotentialSubordinates } from "@/utils/getPotentialSubordinates";
 
-type UserFormProps =
-  | { mode: "create"; onSave: () => void }
-  | { mode: "edit"; userId: string; onSave: () => void };
+type UserFormCreateProps = { mode: "create"; onSave: () => void };
+type UserFormEditProps = { mode: "edit"; userId: string; onSave: () => void };
 
-export const UserForm: React.FC<UserFormProps> = (props) => {
+export const UserForm = (props: UserFormCreateProps | UserFormEditProps) => {
   const users = useUserStore((state) => state.users);
   const addUser = useUserStore((state) => state.addUser);
   const updateUser = useUserStore((state) => state.updateUser);
 
-  const existingUser =
+  const currentUser =
     props.mode === "edit" ? users.find((u) => u.id === props.userId) : null;
 
   const defaultValues: UserFormData = {
-    name: existingUser?.name || "",
-    email: existingUser?.email || "",
-    phone: existingUser?.phone || "",
-    role: existingUser?.role || "User",
-    subordinates: existingUser?.subordinates || [],
+    name: currentUser?.name || "",
+    email: currentUser?.email || "",
+    phone: currentUser?.phone || "",
+    role: currentUser?.role || "User",
+    subordinates: currentUser?.subordinates || [],
   };
 
   const {
@@ -58,6 +57,8 @@ export const UserForm: React.FC<UserFormProps> = (props) => {
     name: "subordinates",
   });
 
+  const potentialSubordinates = getPotentialSubordinates(users, currentUser);
+
   const onSubmit = (data: UserFormData) => {
     if (props.mode === "create") {
       const id = nanoid();
@@ -67,12 +68,12 @@ export const UserForm: React.FC<UserFormProps> = (props) => {
         const u = users.find((user) => user.id === subId);
         if (u) updateUser(subId, { ...u, managerId: id });
       });
-    } else if (props.mode === "edit" && existingUser) {
-      updateUser(existingUser.id, { ...existingUser, ...data });
+    } else if (props.mode === "edit" && currentUser) {
+      updateUser(currentUser.id, { ...currentUser, ...data });
 
       users.forEach((u) => {
         if (
-          u.managerId === existingUser.id &&
+          u.managerId === currentUser.id &&
           !data.subordinates.includes(u.id)
         ) {
           updateUser(u.id, { ...u, managerId: null });
@@ -81,14 +82,12 @@ export const UserForm: React.FC<UserFormProps> = (props) => {
 
       data.subordinates.forEach((subId) => {
         const u = users.find((user) => user.id === subId);
-        if (u) updateUser(subId, { ...u, managerId: existingUser.id });
+        if (u) updateUser(subId, { ...u, managerId: currentUser.id });
       });
     }
 
     props.onSave();
   };
-
-  const potentialSubordinates = users.filter((u) => u.id !== existingUser?.id);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
