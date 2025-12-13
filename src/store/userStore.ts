@@ -1,5 +1,5 @@
 import { persist } from "zustand/middleware";
-import { User } from "../modules/users/types";
+import { User } from "@/types/user";
 import { create } from "zustand";
 import { seedUsers } from "@/data/users";
 

@@ -1,16 +1,17 @@
-import { Button } from "@mui/material";
-import { ReactElement } from "react";
+import { Button, ButtonProps } from "@mui/material";
+import { ReactNode } from "react";
 
-type ActionButton = {
-  children: ReactElement;
+type ActionButton = ButtonProps & {
+  children: ReactNode;
 };
 
-export const ActionButton = ({ children }: ActionButton) => {
+export const ActionButton = ({ children, ...props }: ActionButton) => {
   return (
     <Button
       variant="contained"
       color="primary"
       sx={{ padding: 0, minWidth: "36px", minHeight: "36px" }}
+      {...props}
     >
       {children}
     </Button>
