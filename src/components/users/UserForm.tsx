@@ -67,7 +67,6 @@ export const UserForm: React.FC<UserFormProps> = (props) => {
         const u = users.find((user) => user.id === subId);
         if (u) updateUser(subId, { ...u, managerId: id });
       });
-      
     } else if (props.mode === "edit" && existingUser) {
       updateUser(existingUser.id, { ...existingUser, ...data });
 
@@ -161,9 +160,24 @@ export const UserForm: React.FC<UserFormProps> = (props) => {
             </Select>
           </div>
 
-          <Button type="submit" variant="contained" color="primary">
-            {props.mode === "create" ? "Создать" : "Сохранить"}
-          </Button>
+          <div className="w-full flex gap-4">
+            <Button
+              onClick={props.onSave}
+              variant="contained"
+              color="secondary"
+              className="grow"
+            >
+              Отмена
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className="grow"
+            >
+              {props.mode === "create" ? "Создать" : "Сохранить"}
+            </Button>
+          </div>
         </FormGroup>
       </FormControl>
     </form>
