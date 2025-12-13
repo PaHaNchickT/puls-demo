@@ -2,12 +2,14 @@ import { persist } from "zustand/middleware";
 import { User } from "@/types/user";
 import { create } from "zustand";
 import { seedUsers } from "@/data/users";
+import { DeleteCheckResult } from "@/types/store";
 
 type UserState = {
   users: User[];
   loadInitial: () => void;
   addUser: (u: User) => void;
   updateUser: (id: string, patch: Partial<User>) => void;
+  checkBeforeDeletion: (id: string) => DeleteCheckResult;
   deleteUser: (id: string) => void;
   getUserById: (id: string | null) => User | null;
 };
@@ -28,8 +30,53 @@ export const useUserStore = create<UserState>()(
             user.id === id ? { ...user, ...patch } : user
           ),
         })),
-      deleteUser: (id) =>
-        set((s) => ({ users: s.users.filter((u) => u.id !== id) })),
+      checkBeforeDeletion: (userId: string): DeleteCheckResult => {
+        const users = get().users;
+        const user = users.find((u) => u.id === userId);
+
+        if (!user) {
+          return { type: "ok" };
+        }
+
+        const subordinates = users.filter((u) => u.managerId === userId);
+
+        const manager = user.managerId
+          ? users.find((u) => u.id === user.managerId) ?? null
+          : null;
+
+        if (manager && subordinates.length > 0) {
+          return {
+            type: "hasBoth",
+            manager,
+            subordinates,
+          };
+        }
+
+        if (subordinates.length > 0) {
+          return {
+            type: "hasSubordinates",
+            subordinates,
+          };
+        }
+
+        if (manager) {
+          return {
+            type: "hasManager",
+            manager,
+          };
+        }
+
+        return { type: "ok" };
+      },
+      deleteUser: (userId: string) => {
+        const users = get().users;
+
+        const updatedUsers = users
+          .filter((u) => u.id !== userId)
+          .map((u) => (u.managerId === userId ? { ...u, managerId: null } : u));
+
+        set({ users: updatedUsers });
+      },
       getUserById: (id: string | null) =>
         get().users.find((u) => u.id === id) ?? null,
     }),

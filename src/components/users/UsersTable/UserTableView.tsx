@@ -7,29 +7,36 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import { Button, Paper, TableContainer } from "@mui/material";
 
-import { ModalState } from "./types";
 import { UserTableBodyRow } from "./UserTableBodyRow";
-import { User } from "@/types/user";
 import { UserTableHead } from "./UserTableHead";
 import { UserTableEmpty } from "./UserTableEmpty";
+
+import { User } from "@/types/user";
+import { ModalState } from "@/types/usersTable";
+import { UserTableConfirm } from "./UserTableConfirm";
+import { closeModal, openCreateModal } from "./modalFactories";
 
 type UserTableViewProps = {
   users: User[];
   modalState: ModalState;
   setModalState: (state: ModalState) => void;
+  deleteUser: (id: string) => void;
+  getUserById: (id: string | null) => User | null;
 };
 
 export const UserTableView = ({
   users,
   modalState,
   setModalState,
+  deleteUser,
+  getUserById,
 }: UserTableViewProps) => {
   const handleCreateUser = useCallback(() => {
-    setModalState({ isOpen: true, mode: "create", editingUserId: null });
+    setModalState(openCreateModal());
   }, [setModalState]);
 
   const handleModalClose = useCallback(() => {
-    setModalState({ isOpen: false, mode: null, editingUserId: null });
+    setModalState(closeModal());
   }, [setModalState]);
 
   return (
@@ -47,11 +54,13 @@ export const UserTableView = ({
           <UserTableHead />
           <TableBody>
             {users.length ? (
-              users.map((user, index) => (
+              users.map((user) => (
                 <UserTableBodyRow
-                  key={index}
+                  key={user.id}
                   user={user}
                   setModalState={setModalState}
+                  deleteUser={deleteUser}
+                  getUserById={getUserById}
                 />
               ))
             ) : (
@@ -78,6 +87,14 @@ export const UserTableView = ({
             mode="edit"
             userId={modalState.editingUserId}
             onSave={handleModalClose}
+          />
+        )}
+        {modalState.mode === "delete" && (
+          <UserTableConfirm
+            handleCancel={handleModalClose}
+            modalState={modalState}
+            deleteUser={deleteUser}
+            getUserById={getUserById}
           />
         )}
       </Modal>

@@ -9,30 +9,41 @@ import { TableCell, TableRow } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import { USER_ROLE_MAPPING } from "@/constants/users";
+import { USER_DELETE_CONFIRM, USER_ROLE_MAPPING } from "@/constants/users";
 import { User } from "@/types/user";
-import { ModalState } from "./types";
+import { ModalState } from "@/types/usersTable";
+import { openDeleteModal, openEditModal } from "./modalFactories";
 
 type UserTableBodyRowProps = {
   user: User;
   setModalState: (data: ModalState) => void;
+  deleteUser: (id: string) => void;
+  getUserById: (id: string | null) => User | null;
 };
 
 export const UserTableBodyRow = memo(
-  ({ user, setModalState }: UserTableBodyRowProps) => {
-    const deleteUser = useUserStore((state) => state.deleteUser);
-    const getUserById = useUserStore((store) => store.getUserById);
+  ({ user, setModalState, deleteUser, getUserById }: UserTableBodyRowProps) => {
+    const checkBeforeDeletion = useUserStore(
+      (store) => store.checkBeforeDeletion
+    );
 
     const handleEditUser = useCallback(
-      (id: string) => {
-        setModalState({ isOpen: true, mode: "edit", editingUserId: id });
-      },
+      (id: string) => setModalState(openEditModal(id)),
       [setModalState]
     );
 
-    const handleDeleteUser = (id: string) => {
-      deleteUser(id);
-    };
+    const handleCheckBeforeDelete = useCallback(
+      (id: string) => {
+        const result = checkBeforeDeletion(id);
+
+        if (result.type === "ok") {
+          deleteUser(id);
+        } else {
+          setModalState(openDeleteModal(id, USER_DELETE_CONFIRM[result.type]));
+        }
+      },
+      [setModalState, checkBeforeDeletion, deleteUser]
+    );
 
     return (
       <TableRow
@@ -55,7 +66,7 @@ export const UserTableBodyRow = memo(
               <ActionButton onClick={() => handleEditUser(user.id)}>
                 <EditIcon />
               </ActionButton>
-              <ActionButton onClick={() => handleDeleteUser(user.id)}>
+              <ActionButton onClick={() => handleCheckBeforeDelete(user.id)}>
                 <DeleteIcon />
               </ActionButton>
             </div>
