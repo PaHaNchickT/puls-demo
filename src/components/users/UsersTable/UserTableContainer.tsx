@@ -1,8 +1,9 @@
 import { useUserStore } from "@/store/userStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserTableView } from "./UserTableView";
 import { ModalState } from "@/types/usersTable";
 import { closeModal } from "./factories/closeModal";
+import { Loader } from "@/components/ui/Loader";
 
 export const UserTableContainer = () => {
   const users = useUserStore((state) => state.users);
@@ -13,16 +14,28 @@ export const UserTableContainer = () => {
   const getUserById = useUserStore((store) => store.getUserById);
 
   const [modalState, setModalState] = useState<ModalState>(closeModal());
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLoading(false);
+  }, []);
 
   return (
-    <UserTableView
-      users={users}
-      modalState={modalState}
-      setModalState={setModalState}
-      addUser={addUser}
-      updateUser={updateUser}
-      deleteUser={deleteUser}
-      getUserById={getUserById}
-    />
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <UserTableView
+          users={users}
+          modalState={modalState}
+          setModalState={setModalState}
+          addUser={addUser}
+          updateUser={updateUser}
+          deleteUser={deleteUser}
+          getUserById={getUserById}
+        />
+      )}
+    </>
   );
 };
