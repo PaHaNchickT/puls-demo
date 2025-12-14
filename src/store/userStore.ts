@@ -1,18 +1,10 @@
 import { persist } from "zustand/middleware";
-import { User } from "@/types/user";
 import { create } from "zustand";
-import { seedUsers } from "@/data/users";
-import { DeleteCheckResult } from "@/types/store";
 
-type UserState = {
-  users: User[];
-  loadInitial: () => void;
-  addUser: (u: User) => void;
-  updateUser: (id: string, patch: Partial<User>) => void;
-  checkBeforeDeletion: (id: string) => DeleteCheckResult;
-  deleteUser: (id: string) => void;
-  getUserById: (id: string | null) => User | null;
-};
+import { seedUsers } from "@/data/users";
+import { DeleteCheckResult, UserState } from "@/types/store";
+
+import { checkBeforeDeletion } from "./helpers/checkBeforeDeletion";
 
 export const useUserStore = create<UserState>()(
   persist(
@@ -23,51 +15,22 @@ export const useUserStore = create<UserState>()(
           set({ users: seedUsers });
         }
       },
+
       addUser: (u) => set((s) => ({ users: [u, ...s.users] })),
+
       updateUser: (id, patch) =>
         set((s) => ({
           users: s.users.map((user) =>
             user.id === id ? { ...user, ...patch } : user
           ),
         })),
+
       checkBeforeDeletion: (userId: string): DeleteCheckResult => {
         const users = get().users;
-        const user = users.find((u) => u.id === userId);
 
-        if (!user) {
-          return { type: "ok" };
-        }
-
-        const subordinates = users.filter((u) => u.managerId === userId);
-
-        const manager = user.managerId
-          ? users.find((u) => u.id === user.managerId) ?? null
-          : null;
-
-        if (manager && subordinates.length > 0) {
-          return {
-            type: "hasBoth",
-            manager,
-            subordinates,
-          };
-        }
-
-        if (subordinates.length > 0) {
-          return {
-            type: "hasSubordinates",
-            subordinates,
-          };
-        }
-
-        if (manager) {
-          return {
-            type: "hasManager",
-            manager,
-          };
-        }
-
-        return { type: "ok" };
+        return checkBeforeDeletion(users, userId);
       },
+
       deleteUser: (userId: string) => {
         const users = get().users;
 
@@ -77,9 +40,11 @@ export const useUserStore = create<UserState>()(
 
         set({ users: updatedUsers });
       },
+
       getUserById: (id: string | null) =>
         get().users.find((u) => u.id === id) ?? null,
     }),
+
     { name: "users-storage" }
   )
 );
