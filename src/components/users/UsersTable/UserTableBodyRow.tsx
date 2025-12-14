@@ -11,19 +11,26 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import { USER_DELETE_CONFIRM, USER_ROLE_MAPPING } from "@/constants/users";
 import { User } from "@/types/user";
-import { ModalState } from "@/types/usersTable";
+import { ModalState, ModalStatus } from "@/types/usersTable";
 import { openDeleteModal } from "./factories/openDeleteModal";
 import { openEditModal } from "./factories/openEditModal";
 
 type UserTableBodyRowProps = {
   user: User;
+  setDeleteStatus: (type: ModalStatus) => void;
   setModalState: (data: ModalState) => void;
   deleteUser: (id: string) => void;
   getUserById: (id: string | null) => User | null;
 };
 
 export const UserTableBodyRow = memo(
-  ({ user, setModalState, deleteUser, getUserById }: UserTableBodyRowProps) => {
+  ({
+    user,
+    setDeleteStatus,
+    setModalState,
+    deleteUser,
+    getUserById,
+  }: UserTableBodyRowProps) => {
     const checkBeforeDeletion = useUserStore(
       (store) => store.checkBeforeDeletion
     );
@@ -40,10 +47,11 @@ export const UserTableBodyRow = memo(
         if (result.type === "ok") {
           deleteUser(id);
         } else {
+          setDeleteStatus(result.type);
           setModalState(openDeleteModal(id, USER_DELETE_CONFIRM[result.type]));
         }
       },
-      [setModalState, checkBeforeDeletion, deleteUser]
+      [setDeleteStatus, setModalState, checkBeforeDeletion, deleteUser]
     );
 
     return (

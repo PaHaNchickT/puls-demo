@@ -5,16 +5,16 @@ export const checkBeforeDeletion = (
   users: User[],
   userId: string
 ): DeleteCheckResult => {
-  const user = users.find((u) => u.id === userId);
+  const user = users.find((user) => user.id === userId);
 
   if (!user) {
     return { type: "ok" };
   }
 
-  const subordinates = users.filter((u) => u.managerId === userId);
+  const subordinates = users.filter((user) => user.managerId === userId);
 
   const manager = user.managerId
-    ? users.find((u) => u.id === user.managerId) ?? null
+    ? users.find((candidate) => candidate.id === user.managerId) ?? null
     : null;
 
   if (manager && subordinates.length > 0) {

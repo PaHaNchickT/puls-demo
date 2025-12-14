@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { Modal } from "@/components/ui/Modal";
 import { UserFormContainer } from "../UserForm/UserFormContainer";
@@ -12,7 +12,7 @@ import { UserTableHead } from "./UserTableHead";
 import { UserTableEmpty } from "./UserTableEmpty";
 
 import { User } from "@/types/user";
-import { ModalState } from "@/types/usersTable";
+import { ModalState, ModalStatus } from "@/types/usersTable";
 import { UserTableConfirm } from "./UserTableConfirm";
 import { openCreateModal } from "./factories/openCreateModal";
 import { closeModal } from "./factories/closeModal";
@@ -36,6 +36,8 @@ export const UserTableView = ({
   deleteUser,
   getUserById,
 }: UserTableViewProps) => {
+  const [deleteStatus, setDeleteStatus] = useState<ModalStatus>(null);
+
   const handleCreateUser = useCallback(() => {
     setModalState(openCreateModal());
   }, [setModalState]);
@@ -63,6 +65,7 @@ export const UserTableView = ({
                 <UserTableBodyRow
                   key={user.id}
                   user={user}
+                  setDeleteStatus={setDeleteStatus}
                   setModalState={setModalState}
                   deleteUser={deleteUser}
                   getUserById={getUserById}
@@ -105,8 +108,11 @@ export const UserTableView = ({
         )}
         {modalState.mode === "delete" && (
           <UserTableConfirm
-            handleCancel={handleModalClose}
+            users={users}
+            deleteStatus={deleteStatus}
             modalState={modalState}
+            handleCancel={handleModalClose}
+            updateUser={updateUser}
             deleteUser={deleteUser}
             getUserById={getUserById}
           />

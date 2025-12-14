@@ -82,7 +82,11 @@ export const updateHierarchy = (
         if (newManager) {
           updateUser(user.id, { ...user, managerId: newManager.id });
         } else {
-          status = { status: "error", errorMsg: "" };
+          status = {
+            status: "error",
+            errorMsg:
+              "Невозможно изменить роль пользователя, поскольку не удалось найти нового начальника его подчиненным. Назначьте одному из гипотетических руководителей более высокую роль и повторите попытку.",
+          };
         }
       }
     }

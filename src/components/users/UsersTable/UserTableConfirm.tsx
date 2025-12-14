@@ -1,25 +1,44 @@
 import { User } from "@/types/user";
-import { ModalState } from "@/types/usersTable";
+import { ModalState, ModalStatus } from "@/types/usersTable";
 import { Button } from "@mui/material";
+import { updateHierarchy } from "./helpers/updateHierarchy";
 
 type UserTableConfirm = {
-  handleCancel: () => void;
+  users: User[];
+  deleteStatus: ModalStatus;
   modalState: ModalState;
+  handleCancel: () => void;
+  updateUser: (id: string, patch: Partial<User>) => void;
   deleteUser: (id: string) => void;
   getUserById: (id: string | null) => User | null;
 };
 
 export const UserTableConfirm = ({
-  handleCancel,
+  users,
+  deleteStatus,
   modalState,
+  handleCancel,
+  updateUser,
   deleteUser,
   getUserById,
 }: UserTableConfirm) => {
   const handleConfirm = () => {
     if (!modalState.editingUserId) return;
 
-    deleteUser(modalState.editingUserId);
-    handleCancel();
+    const result = updateHierarchy(
+      deleteStatus,
+      users,
+      getUserById(modalState.editingUserId),
+      updateUser
+    );
+
+    if (result.status === "success") {
+      deleteUser(modalState.editingUserId);
+      handleCancel();
+    } else {
+      // TODO: notify
+      console.log(result);
+    }
   };
 
   return (
