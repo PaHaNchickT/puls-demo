@@ -12,7 +12,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { USER_DELETE_CONFIRM, USER_ROLE_MAPPING } from "@/constants/users";
 import { User } from "@/types/user";
 import { ModalState } from "@/types/usersTable";
-import { openDeleteModal, openEditModal } from "./modalFactories";
+import { openDeleteModal } from "./factories/openDeleteModal";
+import { openEditModal } from "./factories/openEditModal";
 
 type UserTableBodyRowProps = {
   user: User;

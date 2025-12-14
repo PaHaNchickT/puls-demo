@@ -2,7 +2,7 @@ import { useUserStore } from "@/store/userStore";
 import { useState } from "react";
 import { UserTableView } from "./UserTableView";
 import { ModalState } from "@/types/usersTable";
-import { closeModal } from "./modalFactories";
+import { closeModal } from "./factories/closeModal";
 
 export const UserTableContainer = () => {
   const users = useUserStore((state) => state.users);

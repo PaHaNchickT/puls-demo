@@ -14,7 +14,8 @@ import { UserTableEmpty } from "./UserTableEmpty";
 import { User } from "@/types/user";
 import { ModalState } from "@/types/usersTable";
 import { UserTableConfirm } from "./UserTableConfirm";
-import { closeModal, openCreateModal } from "./modalFactories";
+import { openCreateModal } from "./factories/openCreateModal";
+import { closeModal } from "./factories/closeModal";
 
 type UserTableViewProps = {
   users: User[];
