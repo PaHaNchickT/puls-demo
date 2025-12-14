@@ -105,12 +105,14 @@ export const UserFormView = ({
             errors={errors}
           />
 
-          <UserFormRolesSubordinates
-            users={users}
-            selectedSubordinates={selectedSubordinates}
-            potentialSubordinates={potentialSubordinates}
-            setValue={setValue}
-          />
+          {mode === "edit" && (
+            <UserFormRolesSubordinates
+              users={users}
+              selectedSubordinates={selectedSubordinates}
+              potentialSubordinates={potentialSubordinates}
+              setValue={setValue}
+            />
+          )}
 
           <UserFormActionButtons mode={mode} onSave={onSave} />
         </FormGroup>
