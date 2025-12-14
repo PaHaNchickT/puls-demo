@@ -1,11 +1,12 @@
 import { User } from "@/types/user";
-import { ModalState, ModalStatus } from "@/types/usersTable";
+import { ModalState, DeleteStatus } from "@/types/usersTable";
 import { Button } from "@mui/material";
 import { updateHierarchy } from "./helpers/updateHierarchy";
+import { notify } from "@/utils/notify";
 
 type UserTableConfirm = {
   users: User[];
-  deleteStatus: ModalStatus;
+  deleteStatus: DeleteStatus;
   modalState: ModalState;
   handleCancel: () => void;
   updateUser: (id: string, patch: Partial<User>) => void;
@@ -36,8 +37,7 @@ export const UserTableConfirm = ({
       deleteUser(modalState.editingUserId);
       handleCancel();
     } else {
-      // TODO: notify
-      console.log(result);
+      notify(result.errorMsg || "Возникла непредвиденная ошибка", "error");
     }
   };
 

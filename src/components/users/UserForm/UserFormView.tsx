@@ -10,6 +10,7 @@ import { ModalMode } from "@/types/usersTable";
 import { UserFormActionButtons } from "./UserFormActionButtons";
 import { useCallback } from "react";
 import { updateHierarchy } from "./helpers/updateHierarchy";
+import { notify } from "@/utils/notify";
 
 type UserFormProps = {
   users: User[];
@@ -58,6 +59,8 @@ export const UserFormView = ({
       if (mode === "create") {
         const id = nanoid();
         addUser({ id, managerId: null, ...data });
+
+        notify("Пользователь успешно создан!", "success");
       } else if (mode === "edit" && currentUser) {
         const result = updateHierarchy(users, data, currentUser, updateUser);
 
@@ -66,12 +69,13 @@ export const UserFormView = ({
 
         if (result.status === "success") {
           updateUser(currentUser.id, { ...currentUser, ...data, managerId });
-          onSave();
+          notify("Данные пользователя успешно сохранены!", "success");
         } else {
-          // TODO: notify
-          console.log("error", result.errorMsg);
+          notify(result.errorMsg || "Возникла непредвиденная ошибка", "error");
         }
       }
+
+      onSave();
     },
     [addUser, currentUser, mode, onSave, updateUser, users]
   );

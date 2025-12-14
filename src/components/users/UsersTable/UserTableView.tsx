@@ -12,7 +12,7 @@ import { UserTableHead } from "./UserTableHead";
 import { UserTableEmpty } from "./UserTableEmpty";
 
 import { User } from "@/types/user";
-import { ModalState, ModalStatus } from "@/types/usersTable";
+import { ModalState, DeleteStatus } from "@/types/usersTable";
 import { UserTableConfirm } from "./UserTableConfirm";
 import { openCreateModal } from "./factories/openCreateModal";
 import { closeModal } from "./factories/closeModal";
@@ -36,7 +36,10 @@ export const UserTableView = ({
   deleteUser,
   getUserById,
 }: UserTableViewProps) => {
-  const [deleteStatus, setDeleteStatus] = useState<ModalStatus>(null);
+  const [deleteStatus, setDeleteStatus] = useState<DeleteStatus>({
+    type: null,
+    errorText: "",
+  });
 
   const handleCreateUser = useCallback(() => {
     setModalState(openCreateModal());

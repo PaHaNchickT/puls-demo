@@ -3,6 +3,8 @@
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ReactNode } from "react";
+import { MaterialDesignContent, SnackbarProvider } from "notistack";
+import styled from "@emotion/styled";
 
 const theme = createTheme({
   palette: {
@@ -42,11 +44,36 @@ const theme = createTheme({
   typography: { fontFamily: "TTHoves, sans-serif" },
 });
 
+const StyledMaterialDesignContent = styled(MaterialDesignContent)(() => ({
+  "&.notistack-MuiContent-success": {
+    backgroundColor: "#daff45",
+    color: "black",
+    maxWidth: "300px",
+  },
+  "&.notistack-MuiContent-error": {
+    backgroundColor: "#ff4574",
+    maxWidth: "300px",
+  },
+}));
+
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      {children}
+      <SnackbarProvider
+        maxSnack={3}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        autoHideDuration={2000}
+        Components={{
+          success: StyledMaterialDesignContent,
+          error: StyledMaterialDesignContent,
+        }}
+      >
+        {children}
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }

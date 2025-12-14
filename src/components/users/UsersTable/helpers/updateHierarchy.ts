@@ -1,5 +1,5 @@
 import { User } from "@/types/user";
-import { ModalStatus } from "@/types/usersTable";
+import { DeleteStatus } from "@/types/usersTable";
 import { getUserRoleIndex } from "@/utils/getUserRoleIndex";
 
 type updateHierarchyStatus = {
@@ -8,7 +8,7 @@ type updateHierarchyStatus = {
 };
 
 export const updateHierarchy = (
-  deleteStatus: ModalStatus,
+  deleteStatus: DeleteStatus,
   users: User[],
   currentUser: User | null,
   updateUser: (id: string, patch: Partial<User>) => void
@@ -17,7 +17,10 @@ export const updateHierarchy = (
 
   const currentUserId = currentUser?.id;
 
-  if (deleteStatus === "hasBoth" || deleteStatus === "hasSubordinates") {
+  if (
+    deleteStatus.type === "hasBoth" ||
+    deleteStatus.type === "hasSubordinates"
+  ) {
     users.forEach((user) => {
       if (currentUser?.subordinates.includes(user.id)) {
         const newManager = users.find(
