@@ -9,8 +9,7 @@ import { UserFormRolesSubordinates } from "./UserFormRolesSubordinates";
 import { ModalMode } from "@/types/usersTable";
 import { UserFormActionButtons } from "./UserFormActionButtons";
 import { useCallback } from "react";
-import { updateManagerId } from "@/components/users/UserForm/helpers/updateManagerId";
-import { resetManagerId } from "./helpers/resetManagerId";
+import { updateHierarchy } from "./helpers/updateHierarchy";
 
 type UserFormProps = {
   users: User[];
@@ -58,17 +57,21 @@ export const UserFormView = ({
     (data: UserFormData) => {
       if (mode === "create") {
         const id = nanoid();
-
         addUser({ id, managerId: null, ...data });
-        updateManagerId(users, data, id, updateUser);
       } else if (mode === "edit" && currentUser) {
-        updateUser(currentUser.id, { ...currentUser, ...data });
+        const result = updateHierarchy(users, data, currentUser, updateUser);
 
-        resetManagerId(users, data, currentUser, updateUser);
-        updateManagerId(users, data, currentUser.id, updateUser);
+        const managerId =
+          "managerId" in result ? result.managerId : currentUser.managerId;
+
+        if (result.status === "success") {
+          updateUser(currentUser.id, { ...currentUser, ...data, managerId });
+          onSave();
+        } else {
+          // TODO: notify
+          console.log("error", result.errorMsg);
+        }
       }
-
-      onSave();
     },
     [addUser, currentUser, mode, onSave, updateUser, users]
   );

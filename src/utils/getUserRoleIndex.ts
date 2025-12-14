@@ -1,5 +1,8 @@
 import { USER_ROLE_MAPPING } from "@/constants/users";
-import { User } from "@/types/user";
 
-export const getUserRoleIndex = (user: User) =>
-  Object.keys(USER_ROLE_MAPPING).indexOf(user.role);
+export const getUserRoleIndex = (role: string) =>
+  Object.keys(USER_ROLE_MAPPING).indexOf(role);
+
+// 0 - Admin
+// 1 - Manager
+// 2 - User

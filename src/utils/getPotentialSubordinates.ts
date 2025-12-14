@@ -9,5 +9,5 @@ export const getPotentialSubordinates = (
     (user) =>
       currentUser &&
       user.id !== currentUser?.id &&
-      getUserRoleIndex(currentUser) < getUserRoleIndex(user)
+      getUserRoleIndex(currentUser.role) < getUserRoleIndex(user.role)
   );
