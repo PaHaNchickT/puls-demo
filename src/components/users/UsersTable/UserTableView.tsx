@@ -5,7 +5,7 @@ import { UserFormContainer } from "../UserForm/UserFormContainer";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import { Button, Paper, TableContainer } from "@mui/material";
+import { Paper, TableContainer } from "@mui/material";
 
 import { UserTableBodyRow } from "./UserTableBodyRow";
 import { UserTableHead } from "./UserTableHead";
@@ -18,6 +18,7 @@ import { openCreateModal } from "./factories/openCreateModal";
 import { closeModal } from "./factories/closeModal";
 import { TableState } from "@/types/tableCommon";
 import { UserTableFooter } from "./UserTableFooter";
+import { UserTableToolbar } from "./UserTableToolbar";
 
 type UserTableViewProps = {
   users: User[];
@@ -64,6 +65,11 @@ export const UserTableView = ({
   return (
     <div className="overflow-auto flex flex-col gap-4">
       <TableContainer component={Paper}>
+        <UserTableToolbar
+          handleCreateUser={handleCreateUser}
+          tableState={tableState}
+          setTableState={setTableState}
+        />
         <Table
           sx={{
             minWidth: 650,
@@ -96,14 +102,6 @@ export const UserTableView = ({
             setTableState={setTableState}
           />
         </Table>
-        <Button
-          variant="contained"
-          color="primary"
-          className="self-start"
-          onClick={handleCreateUser}
-        >
-          Создать Нового Пользователя
-        </Button>
       </TableContainer>
 
       <Modal isOpen={modalState.isOpen} handleClose={handleModalClose}>

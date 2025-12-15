@@ -1,3 +1,5 @@
+import { UserRole } from "./user";
+
 export type SortDirection = "asc" | "desc";
 
 export type TableState<T> = {
@@ -5,5 +7,5 @@ export type TableState<T> = {
   pageSize: number;
   sortBy?: keyof T;
   sortDirection?: SortDirection;
-  filters: Partial<Record<keyof T, string>>;
+  filter: UserRole | "";
 };

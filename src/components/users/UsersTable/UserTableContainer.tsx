@@ -29,7 +29,7 @@ export const UserTableContainer = () => {
     let result = users;
     let total = 0;
 
-    result = applyFilters(result, tableState.filters);
+    result = applyFilters(result, tableState);
 
     result = applySorting(result, tableState.sortBy, tableState.sortDirection);
     total = result.length;
