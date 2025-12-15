@@ -1,3 +1,4 @@
+import { NOTIFY_TEXT } from "@/constants/notify";
 import { UserFormData } from "@/schemas/user";
 import { User } from "@/types/user";
 import { getUserRoleIndex } from "@/utils/getUserRoleIndex";
@@ -84,8 +85,7 @@ export const updateHierarchy = (
         } else {
           status = {
             status: "error",
-            errorMsg:
-              "Невозможно изменить роль пользователя, поскольку не удалось найти нового начальника его подчиненным. Назначьте одному из гипотетических руководителей более высокую роль и повторите попытку.",
+            errorMsg: NOTIFY_TEXT.editFailure,
           };
         }
       }

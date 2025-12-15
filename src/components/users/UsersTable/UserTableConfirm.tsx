@@ -3,6 +3,7 @@ import { ModalState, DeleteStatus } from "@/types/usersTable";
 import { Button } from "@mui/material";
 import { updateHierarchy } from "./helpers/updateHierarchy";
 import { notify } from "@/utils/notify";
+import { NOTIFY_TEXT } from "@/constants/notify";
 
 type UserTableConfirm = {
   users: User[];
@@ -36,8 +37,9 @@ export const UserTableConfirm = ({
     if (result.status === "success") {
       deleteUser(modalState.editingUserId);
       handleCancel();
+      notify(NOTIFY_TEXT.deleteSuccess, "success");
     } else {
-      notify(result.errorMsg || "Возникла непредвиденная ошибка", "error");
+      notify(result.errorMsg || NOTIFY_TEXT.default, "error");
     }
   };
 

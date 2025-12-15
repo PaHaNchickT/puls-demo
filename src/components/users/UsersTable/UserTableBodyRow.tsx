@@ -15,6 +15,7 @@ import { ModalState, DeleteStatus } from "@/types/usersTable";
 import { openDeleteModal } from "./factories/openDeleteModal";
 import { openEditModal } from "./factories/openEditModal";
 import { notify } from "@/utils/notify";
+import { NOTIFY_TEXT } from "@/constants/notify";
 
 type UserTableBodyRowProps = {
   user: User;
@@ -47,7 +48,7 @@ export const UserTableBodyRow = memo(
 
         if (result.type === "ok") {
           deleteUser(id);
-          notify("Пользователь успешно удален!", "success");
+          notify(NOTIFY_TEXT.deleteSuccess, "success");
         } else {
           setDeleteStatus({ type: result.type, errorText: "" });
           setModalState(openDeleteModal(id, USER_DELETE_CONFIRM[result.type]));

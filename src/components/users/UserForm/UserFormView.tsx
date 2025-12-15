@@ -11,6 +11,7 @@ import { UserFormActionButtons } from "./UserFormActionButtons";
 import { useCallback } from "react";
 import { updateHierarchy } from "./helpers/updateHierarchy";
 import { notify } from "@/utils/notify";
+import { NOTIFY_TEXT } from "@/constants/notify";
 
 type UserFormProps = {
   users: User[];
@@ -60,7 +61,7 @@ export const UserFormView = ({
         const id = nanoid();
         addUser({ id, managerId: null, ...data });
 
-        notify("Пользователь успешно создан!", "success");
+        notify(NOTIFY_TEXT.createSuccess, "success");
       } else if (mode === "edit" && currentUser) {
         const result = updateHierarchy(users, data, currentUser, updateUser);
 
@@ -69,9 +70,9 @@ export const UserFormView = ({
 
         if (result.status === "success") {
           updateUser(currentUser.id, { ...currentUser, ...data, managerId });
-          notify("Данные пользователя успешно сохранены!", "success");
+          notify(NOTIFY_TEXT.editSuccess, "success");
         } else {
-          notify(result.errorMsg || "Возникла непредвиденная ошибка", "error");
+          notify(result.errorMsg || NOTIFY_TEXT.default, "error");
         }
       }
 

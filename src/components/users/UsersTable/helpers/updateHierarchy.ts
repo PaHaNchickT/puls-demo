@@ -1,3 +1,4 @@
+import { NOTIFY_TEXT } from "@/constants/notify";
 import { User } from "@/types/user";
 import { DeleteStatus } from "@/types/usersTable";
 import { getUserRoleIndex } from "@/utils/getUserRoleIndex";
@@ -16,6 +17,7 @@ export const updateHierarchy = (
   let status: updateHierarchyStatus = { status: "success" };
 
   const currentUserId = currentUser?.id;
+  const reassignedSubordinates = new Map<string, string[]>();
 
   if (
     deleteStatus.type === "hasBoth" ||
@@ -31,15 +33,27 @@ export const updateHierarchy = (
         );
 
         if (newManager) {
+          const existing = reassignedSubordinates.get(newManager.id) ?? [];
+          reassignedSubordinates.set(newManager.id, [...existing, user.id]);
+
           updateUser(user.id, { ...user, managerId: newManager.id });
         } else {
           status = {
             status: "error",
-            errorMsg:
-              "Невозможно удалить пользователя, поскольку не удалось найти нового начальника его подчиненным. Назначьте одному из гипотетических руководителей более высокую роль и повторите попытку.",
+            errorMsg: NOTIFY_TEXT.deleteFailure,
           };
         }
       }
+    });
+
+    reassignedSubordinates.forEach((subs, managerId) => {
+      const manager = users.find((u) => u.id === managerId);
+      if (!manager) return;
+
+      updateUser(managerId, {
+        ...manager,
+        subordinates: [...manager.subordinates, ...subs],
+      });
     });
   }
 
