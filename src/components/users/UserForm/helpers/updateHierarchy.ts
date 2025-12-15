@@ -1,9 +1,9 @@
-import { NOTIFY_TEXT } from "@/constants/notify";
 import { UserFormData } from "@/schemas/user";
 import { User } from "@/types/user";
 import { getUserRoleIndex } from "@/utils/getUserRoleIndex";
+import { getNewManager } from "./getNewManager";
 
-type updateHierarchyStatus = {
+export type updateHierarchyStatus = {
   status: "success" | "error";
   errorMsg?: string;
   managerId?: string | null;
@@ -47,6 +47,20 @@ export const updateHierarchy = (
       if (user.managerId !== currentUserId && newSubs.includes(user.id)) {
         updateUser(user.id, { ...user, managerId: currentUserId });
       }
+
+      // Если убираем подчиненного, то пытаемся найти ему нового начальника, иначе - не можем отредактировать
+      if (
+        !newSubs.includes(user.id) &&
+        currentUser?.subordinates.includes(user.id)
+      ) {
+        status = getNewManager(
+          users,
+          user,
+          userData,
+          updateUser,
+          currentUserId
+        );
+      }
     }
 
     // ROLE CHECK
@@ -76,22 +90,14 @@ export const updateHierarchy = (
         newSubs.includes(user.id)
       ) {
         // Если начальник перестает быть по статусу выше подчиненного, то пытаемся найти подчиненному нового начальника
-        const newManager = users.find(
-          (candidate) =>
-            candidate.id !== currentUserId &&
-            getUserRoleIndex(candidate.role) < getUserRoleIndex(user.role) &&
-            !userData.subordinates.includes(candidate.id)
+        // В ином случае - запрещаем изменение роли
+        status = getNewManager(
+          users,
+          user,
+          userData,
+          updateUser,
+          currentUserId
         );
-
-        // Если найти нового начальника не удается, то запрещаем изменение роли
-        if (newManager) {
-          updateUser(user.id, { ...user, managerId: newManager.id });
-        } else {
-          status = {
-            status: "error",
-            errorMsg: NOTIFY_TEXT.editFailure,
-          };
-        }
       }
     }
   });

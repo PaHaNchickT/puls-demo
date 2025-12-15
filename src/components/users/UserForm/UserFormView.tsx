@@ -60,6 +60,7 @@ export const UserFormView = ({
       if (mode === "create") {
         const id = nanoid();
         addUser({ id, managerId: null, ...data });
+        onSave();
 
         notify(NOTIFY_TEXT.createSuccess, "success");
       } else if (mode === "edit" && currentUser) {
@@ -70,13 +71,13 @@ export const UserFormView = ({
 
         if (result.status === "success") {
           updateUser(currentUser.id, { ...currentUser, ...data, managerId });
+          onSave();
+
           notify(NOTIFY_TEXT.editSuccess, "success");
         } else {
           notify(result.errorMsg || NOTIFY_TEXT.default, "error");
         }
       }
-
-      onSave();
     },
     [addUser, currentUser, mode, onSave, updateUser, users]
   );
