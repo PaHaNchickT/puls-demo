@@ -12,8 +12,8 @@ export default function HomePage() {
   }, [loadInitial]);
 
   return (
-    <main className="grow p-6 flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Пользователи</h1>
+    <main className="grow flex flex-col gap-4">
+      <h1 className="text-[37px] font-medium">Пользователи</h1>
       <UserTableContainer />
     </main>
   );

@@ -45,7 +45,7 @@ export const UserTableConfirm = ({
 
   return (
     <div className="flex flex-col gap-4 items-center">
-      <h2 className="text-xl font-bold text-center">
+      <h2 className="text-[25px] font-medium text-center leading-[normal]">
         Вы уверены, что хотите удалить пользователя?
       </h2>
       <p className="whitespace-pre-line">{`${
