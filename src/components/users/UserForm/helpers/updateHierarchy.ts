@@ -33,14 +33,18 @@ export const updateHierarchy = (
   users.forEach((user) => {
     // SUBORDINATES CHECK
     if (isSubsChanged) {
-      if (user.id === currentUser?.managerId) {
+      if (subsDiff.includes(user.id)) {
         // У старого начальника убираем подчиненного, у которого теперь новый начальник
-        updateUser(user.id, {
-          ...user,
-          subordinates: user.subordinates.filter(
-            (id) => !subsDiff.includes(id)
-          ),
-        });
+        const oldManager = users.find(
+          (candidate) => candidate.id === user.managerId
+        );
+
+        if (oldManager) {
+          updateUser(oldManager.id, {
+            ...oldManager,
+            subordinates: user.subordinates.filter((id) => id !== user.id),
+          });
+        }
       }
 
       // Если назначаем челу подчиненных, то у этих подчиненных нужно обновить managerId
