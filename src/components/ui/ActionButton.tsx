@@ -10,7 +10,12 @@ export const ActionButton = ({ children, ...props }: ActionButton) => {
     <Button
       variant="contained"
       color="primary"
-      sx={{ padding: 0, minWidth: "36px", minHeight: "36px" }}
+      sx={{
+        padding: 0,
+        minWidth: "36px",
+        minHeight: "36px",
+        borderRadius: "100%",
+      }}
       {...props}
     >
       {children}
