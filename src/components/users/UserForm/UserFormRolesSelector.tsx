@@ -5,20 +5,24 @@ import { ChangeEvent, useCallback } from "react";
 import { FieldErrors, UseFormSetValue } from "react-hook-form";
 
 type UserFormRolesSelectorProps = {
+  updateSubs: (role: UserRole) => void;
   selectedRole: UserRole;
   setValue: UseFormSetValue<UserFormData>;
   errors: FieldErrors<UserFormData>;
 };
 
 export const UserFormRolesSelector = ({
+  updateSubs,
   selectedRole,
   setValue,
   errors,
 }: UserFormRolesSelectorProps) => {
   const handleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) =>
-      setValue("role", event.target.value as UserRole),
-    [setValue]
+    (event: ChangeEvent<HTMLInputElement>) => {
+      updateSubs(event.target.value as UserRole);
+      setValue("role", event.target.value as UserRole);
+    },
+    [updateSubs, setValue]
   );
 
   return (

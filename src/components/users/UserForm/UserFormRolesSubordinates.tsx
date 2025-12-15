@@ -13,15 +13,15 @@ import { UseFormSetValue } from "react-hook-form";
 
 type UserFormRolesSubordinatesProps = {
   users: User[];
-  selectedSubordinates: string[];
-  potentialSubordinates: User[];
+  selectedSubs: string[];
+  potentialSubs: User[];
   setValue: UseFormSetValue<UserFormData>;
 };
 
 export const UserFormRolesSubordinates = ({
   users,
-  selectedSubordinates,
-  potentialSubordinates,
+  selectedSubs,
+  potentialSubs,
   setValue,
 }: UserFormRolesSubordinatesProps) => {
   const handleChange = useCallback(
@@ -41,7 +41,7 @@ export const UserFormRolesSubordinates = ({
       <Select
         id="subordinates"
         multiple
-        value={selectedSubordinates}
+        value={selectedSubs}
         onChange={handleChange}
         renderValue={(selected) =>
           users
@@ -51,9 +51,9 @@ export const UserFormRolesSubordinates = ({
         }
         className="w-full"
       >
-        {potentialSubordinates.map((user) => (
+        {potentialSubs.map((user) => (
           <MenuItem key={user.id} value={user.id}>
-            <Checkbox checked={selectedSubordinates.includes(user.id)} />
+            <Checkbox checked={selectedSubs.includes(user.id)} />
             <ListItemText primary={user.name} />
           </MenuItem>
         ))}

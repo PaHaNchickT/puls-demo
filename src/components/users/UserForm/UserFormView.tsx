@@ -3,22 +3,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { TextField, FormControl, FormGroup } from "@mui/material";
 import { nanoid } from "nanoid";
 import { userSchema, UserFormData } from "@/schemas/user";
-import { User } from "@/types/user";
+import { User, UserRole } from "@/types/user";
 import { UserFormRolesSelector } from "./UserFormRolesSelector";
 import { UserFormRolesSubordinates } from "./UserFormRolesSubordinates";
 import { ModalMode } from "@/types/usersTable";
 import { UserFormActionButtons } from "./UserFormActionButtons";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { updateHierarchy } from "./helpers/updateHierarchy";
 import { notify } from "@/utils/notify";
 import { NOTIFY_TEXT } from "@/constants/notify";
+import { getPotentialSubordinates } from "@/utils/getPotentialSubordinates";
 
 type UserFormProps = {
   users: User[];
   currentUser?: User | null;
   mode: ModalMode;
   defaultValues: UserFormData;
-  potentialSubordinates: User[];
+  potentialSubsInit: User[];
   onSave: () => void;
   addUser: (u: User) => void;
   updateUser: (id: string, patch: Partial<User>) => void;
@@ -29,7 +30,7 @@ export const UserFormView = ({
   currentUser,
   mode,
   defaultValues,
-  potentialSubordinates,
+  potentialSubsInit,
   onSave,
   addUser,
   updateUser,
@@ -44,16 +45,38 @@ export const UserFormView = ({
     resolver: zodResolver(userSchema),
     defaultValues,
   });
+  const [potentialSubs, setPotentialSubs] = useState(potentialSubsInit);
 
   const selectedRole = useWatch({
     control,
     name: "role",
   });
 
-  const selectedSubordinates = useWatch({
+  const selectedSubs = useWatch({
     control,
     name: "subordinates",
   });
+
+  const updateSubs = useCallback(
+    (role: UserRole) => {
+      if (!currentUser) return;
+
+      const potentialSubsUpdated = getPotentialSubordinates(users, {
+        ...currentUser,
+        role,
+      });
+      const potentialSubsUpdatedIds = potentialSubsUpdated.map((sub) => sub.id);
+
+      setValue(
+        "subordinates",
+        currentUser.subordinates.filter((sub) =>
+          potentialSubsUpdatedIds.includes(sub)
+        )
+      );
+      setPotentialSubs(potentialSubsUpdated);
+    },
+    [currentUser, setValue, users]
+  );
 
   const onSubmit = useCallback(
     (data: UserFormData) => {
@@ -109,6 +132,7 @@ export const UserFormView = ({
           />
 
           <UserFormRolesSelector
+            updateSubs={updateSubs}
             selectedRole={selectedRole}
             setValue={setValue}
             errors={errors}
@@ -117,8 +141,8 @@ export const UserFormView = ({
           {mode === "edit" && (
             <UserFormRolesSubordinates
               users={users}
-              selectedSubordinates={selectedSubordinates}
-              potentialSubordinates={potentialSubordinates}
+              selectedSubs={selectedSubs}
+              potentialSubs={potentialSubs}
               setValue={setValue}
             />
           )}

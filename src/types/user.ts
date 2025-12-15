@@ -11,7 +11,7 @@ export type User = {
   name: string;
   email: string;
   phone: string;
-  role: "Admin" | "Manager" | "User";
+  role: UserRole;
   managerId: string | null;
   subordinates: Array<string>;
 };
