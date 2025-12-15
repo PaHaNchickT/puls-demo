@@ -1,6 +1,6 @@
 # Приложение "Puls CRUD Demo"
 
-![promo-image](https://github.com/user-attachments/assets/39e62817-580b-4365-8512-8eb436d18de2)
+![promo-image](https://github.com/user-attachments/assets/135a35c1-2e58-4ef1-886d-a0deee5590a8)
 
 Деплой: [https://puls-demo.vercel.app/](https://puls-demo.vercel.app/)
 
