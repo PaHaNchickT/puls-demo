@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
 import { Modal } from "@/components/ui/Modal";
 import { UserFormContainer } from "../UserForm/UserFormContainer";
@@ -16,11 +16,18 @@ import { ModalState, DeleteStatus } from "@/types/usersTable";
 import { UserTableConfirm } from "./UserTableConfirm";
 import { openCreateModal } from "./factories/openCreateModal";
 import { closeModal } from "./factories/closeModal";
+import { TableState } from "@/types/tableCommon";
+import { UserTableFooter } from "./UserTableFooter";
 
 type UserTableViewProps = {
   users: User[];
+  processedUsers: User[];
+  total: number;
   modalState: ModalState;
   setModalState: (state: ModalState) => void;
+  tableState: TableState<User>;
+  setTableState: Dispatch<SetStateAction<TableState<User>>>;
+  handleSort: (name: keyof User) => void;
   addUser: (u: User) => void;
   updateUser: (id: string, patch: Partial<User>) => void;
   deleteUser: (id: string) => void;
@@ -29,8 +36,13 @@ type UserTableViewProps = {
 
 export const UserTableView = ({
   users,
+  processedUsers,
+  total,
   modalState,
   setModalState,
+  tableState,
+  setTableState,
+  handleSort,
   addUser,
   updateUser,
   deleteUser,
@@ -61,10 +73,10 @@ export const UserTableView = ({
           }}
           aria-label="simple table"
         >
-          <UserTableHead />
+          <UserTableHead tableState={tableState} handleSort={handleSort} />
           <TableBody>
-            {users.length ? (
-              users.map((user) => (
+            {processedUsers.length ? (
+              processedUsers.map((user) => (
                 <UserTableBodyRow
                   key={user.id}
                   user={user}
@@ -78,6 +90,11 @@ export const UserTableView = ({
               <UserTableEmpty />
             )}
           </TableBody>
+          <UserTableFooter
+            total={total}
+            tableState={tableState}
+            setTableState={setTableState}
+          />
         </Table>
         <Button
           variant="contained"
