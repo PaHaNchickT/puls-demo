@@ -1,6 +1,6 @@
 import { TableState } from "@/types/tableCommon";
 import { User } from "@/types/user";
-import { TableFooter, TablePagination } from "@mui/material";
+import { TableFooter, TablePagination, TableRow } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
 
 type UserTableFooterProps = {
@@ -15,18 +15,23 @@ export const UserTableFooter = ({
   setTableState,
 }: UserTableFooterProps) => (
   <TableFooter>
-    <TablePagination
-      count={total}
-      page={tableState.page}
-      onPageChange={(_, page) => setTableState((state) => ({ ...state, page }))}
-      rowsPerPage={tableState.pageSize}
-      onRowsPerPageChange={(e) =>
-        setTableState((state) => ({
-          ...state,
-          pageSize: Number(e.target.value),
-          page: 0,
-        }))
-      }
-    />
+    <TableRow>
+      <TablePagination
+        count={total}
+        page={tableState.page}
+        onPageChange={(_, page) =>
+          setTableState((state) => ({ ...state, page }))
+        }
+        rowsPerPage={tableState.pageSize}
+        onRowsPerPageChange={(e) =>
+          setTableState((state) => ({
+            ...state,
+            pageSize: Number(e.target.value),
+            page: 0,
+          }))
+        }
+        rowsPerPageOptions={[5, 10, 25, 50]}
+      />
+    </TableRow>
   </TableFooter>
 );
